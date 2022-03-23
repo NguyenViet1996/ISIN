@@ -27,7 +27,7 @@ public class Test {
 
     private static void mainProcessing(int amountToPay, List<Isin> arrayItem) {
         for (Isin i : arrayItem) {
-            System.out.println(i.getNameIsin() + " " + i.getQuantityIsin() + " " + i.getPriceIsin());
+            System.out.println(i.getNameIsin() + "\t" + "\t" + i.getQuantityIsin() + "\t " + "\t" + i.getPriceIsin());
         }
         // Amount money that user have
         Scanner inforUser = new Scanner(System.in);
@@ -35,7 +35,6 @@ public class Test {
         int amountMoneyUserHave = Integer.parseInt(inforUser.nextLine());
 
         while(true){
-
             // select name ISIN
             System.out.print("Please enter the name ISIN that you want to invest : ");
             String nameIsinUserSelect = inforUser.nextLine();
@@ -47,27 +46,13 @@ public class Test {
             if(foundIsin.isPresent()) {
                 amountToPay = amountIsinUserBuy * foundIsin.get().getPriceIsin();
                 if(amountToPay <= amountMoneyUserHave){
-                    //1 hàm con
                     if( amountIsinUserBuy <= foundIsin.get().getQuantityIsin()){
-                        System.out.println("The amount ISIN that you get is : " + amountIsinUserBuy);
-                        int amountMoneyAfter = amountMoneyUserHave - amountToPay;
-                        if (amountMoneyAfter > 0){
-                            processAfterFirst(amountMoneyAfter , foundIsin.get().getPriceIsin());
-                        }
-                            break;
+                        caseFirst(amountIsinUserBuy,foundIsin.get().getQuantityIsin(),amountToPay,amountMoneyUserHave,foundIsin.get().getPriceIsin(),foundIsin.get().getNameIsin());
+                        break;
                     }
-                    // 1 hàm con
                     else if( amountIsinUserBuy > foundIsin.get().getQuantityIsin()){
-                        System.out.println("The amount maximum of " + foundIsin.get().getNameIsin() + " is " + foundIsin.get().getQuantityIsin());
-                        System.out.println("Do you want to buy ? ");
-                        String answerUser = inforUser.nextLine();
-                        if(answerUser.equals("yes")){
-                            System.out.println("The amount money that you have to pay  is :" + foundIsin.get().getQuantityIsin() * foundIsin.get().getPriceIsin());
-                            break;
-                        }
-                        else if(answerUser.equals("no")){
-                            // nếu người dùng ko muốn mua hết thì cho người dùng chọn lại số lượng mua (dùng while)
-                        }
+                        caseSecond(foundIsin.get().getNameIsin(),foundIsin.get().getQuantityIsin(),foundIsin.get().getPriceIsin(),amountToPay);
+                        break;
                     }
                 } else {
                     System.out.println("Sorry you do not have enough money");
@@ -98,23 +83,47 @@ public class Test {
         return arrayList;
     }
 
-    private static void processAfterFirst(int moneyHave , int price ) {
-        Scanner b = new Scanner(System.in);
-        System.out.println("The amount money after buying is : " + moneyHave);
-        System.out.println("Do you want to continue to buy ? ");
-        String answer =  b.nextLine();
-        if(answer.equals("yes")){
-            // quantity that user want buy
-            System.out.print("Please enter the amount of that you want to buy : ");
-            int amountIsinUserBuy = b.nextInt();
-            int totalPay = amountIsinUserBuy * price;
-            if(totalPay <= moneyHave){
-                System.out.println("The amount of ISIN that you have is " + amountIsinUserBuy);
-            } else {
-                System.out.println("Sorry you do not have enough money");
+    private static void caseFirst(int amountIsinUserBuy,int quantityIsin, int amountToPay,int amountMoneyUserHave,int price,String nameIsin) {
+        System.out.println("The amount " + nameIsin + " that you get is : " + amountIsinUserBuy);
+        int amountMoneyUserAfterBuy = amountMoneyUserHave - amountToPay;
+        int amountQuantityISINAfterBuy = quantityIsin - amountIsinUserBuy;
+        if (amountQuantityISINAfterBuy > 0 && amountMoneyUserAfterBuy > 0) {
+            Scanner answerUser = new Scanner(System.in);
+            System.out.println("The amount of " + nameIsin + " after buying is  : " + amountQuantityISINAfterBuy + " . Do you want to buy ? ");
+            String selectUser = answerUser.nextLine();
+            if(selectUser.equals("yes")){
+                  System.out.print("How many of " + nameIsin + " do you buy ? ");
+                  int amountQuantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
+                  if(amountQuantityUserBuySecond <= amountQuantityISINAfterBuy){
+                      int totalPaySecond = amountQuantityUserBuySecond * price;
+                      if(totalPaySecond <= amountMoneyUserAfterBuy){
+                          System.out.println("The amount money of that you have to pay : " + totalPaySecond + " . See you again");
+                      } else {
+                          System.out.println("Sorry you do not have enough money . See you again");
+                      }
+                  } else {
+                      System.out.println("The quantity is not enough . See you again");
+                  }
+                } else if(selectUser.equals("no")){
+                System.out.println("See you again");
             }
-        } else if(answer.equals("no")){
-            System.out.println("See you again");
+        }
+    }
+
+    private static void caseSecond(String nameIsin, int quantityIsin,int price, int totalPay ){
+        Scanner answerUser = new Scanner(System.in);
+        System.out.print("The maximum quantity of " + nameIsin + " is :" + quantityIsin + " . Do you want to buy ? ");
+        String selectUser = answerUser.nextLine();
+        if(selectUser.equals("yes")){
+            System.out.println("The amount money that you have to pay : " +totalPay + " . See you again");
+        } else if(selectUser.equals("no")){
+            System.out.print("How many of " + nameIsin + " do you want to buy ? ");
+            int quantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
+            if(quantityUserBuySecond <= quantityIsin){
+                System.out.println("The amount of " + nameIsin + " that you have is " + quantityUserBuySecond + " . " + "The total money that you have you have to pay is " + quantityUserBuySecond * price + ". See you again");
+            } else {
+                System.out.println("The amount of " + nameIsin + " is not enough . See you again");
+            }
         }
     }
 
