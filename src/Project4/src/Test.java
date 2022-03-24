@@ -7,145 +7,192 @@ import java.util.Scanner;
 import java.util.Optional;
 public class Test {
 
+    public static final String YES = "yes";
+    public static final String NO = "yes";
+
     public static void main(String[] args) throws IOException {
 
-        int totalToPay=0;
-        System.out.println("This is information of code ISIN : The name of ISIN,the quantity of ISIN , the price of ISIN");
-        System.out.println("ISIN" + "\t" + "\t" + "QUANTITY" + "\t" + "PRICE");
+        System.out.println("ISIN\t\tQUANTITY\tPRICE");
 
-        // 1.lấy dữ liệu và tảo thành mảng chuỗi => tạo một hàm xử lí dữ liệu truyền vào và trả ra  mảng chuỗi
+        // First : get data and create array of string --> create function to resolve data and return array of string
         String url = "src/Project4/resource/data.txt";
-        List<String[]> listLine = getDataFromTextFile(url);
+        List<String[]> arrayString = getDataFromFileText(url);
 
-        // 2 . tạo từng đối tượng item và truyển dữ liệu vào từng đối tượng => tạo một hàm xử lí truyền vào mảng chuỗi
-        // và trả ra mảng các đối tượng
-        List<Project4.src.Isin> listIsin = createArrayItem(listLine);
+        // Second : create each object and transfer data into every item --> create a function to transfer into  array of string and return an array of item
+        List<Project4.src.Isin> arrayItem = createArrayOfIsin(arrayString);
 
-        //3 . hiển thị thông tin cho người dùng xem
-        mainProcessing(totalToPay, listIsin);
+        // Third : Show data on the UI
+        mainProcessing(arrayItem);
+
     }
 
-    private static void mainProcessing(int amountToPay, List<Isin> arrayItem) {
-        for (Isin i : arrayItem) {
-            System.out.println(i.getNameIsin() + "\t" + "\t" + i.getQuantityIsin() + "\t " + "\t" + i.getPriceIsin());
-        }
-        // Amount money that user have
-        Scanner inforUser = new Scanner(System.in);
-        System.out.print("Please enter the amount money that you have : ");
-        int amountMoneyUserHave = Integer.parseInt(inforUser.nextLine());
+    /**
+     * main process programing
+     * @param arrayItem
+     */
+    private static void mainProcessing(List<Isin> arrayItem) {
 
-        while(true){
-            // select name ISIN
-            System.out.print("Please enter the name ISIN that you want to invest : ");
-            String nameIsinUserSelect = inforUser.nextLine();
-            // quantity that user want buy
-            System.out.print("Please enter the amount ISIN that you want to buy : ");
-            int amountIsinUserBuy = Integer.parseInt(inforUser.nextLine());
-            // check and filter the item
-            Optional<Isin> foundIsin = arrayItem.stream().filter(i -> i.getNameIsin().equals(nameIsinUserSelect)).findFirst();
-            if(foundIsin.isPresent()) {
-                amountToPay = amountIsinUserBuy * foundIsin.get().getPriceIsin();
-                if(amountToPay <= amountMoneyUserHave){
-                    if( amountIsinUserBuy <= foundIsin.get().getQuantityIsin()){
-                        caseFirst(amountIsinUserBuy,foundIsin.get().getQuantityIsin(),amountToPay,amountMoneyUserHave,foundIsin.get().getPriceIsin(),foundIsin.get().getNameIsin());
-                        break;
-                    }
-                    else if( amountIsinUserBuy > foundIsin.get().getQuantityIsin()){
-                        caseSecond(foundIsin.get().getNameIsin(),foundIsin.get().getQuantityIsin(),foundIsin.get().getPriceIsin(),amountToPay);
-                        break;
+        for (Isin i : arrayItem ) {
+            System.out.println( i.getNameIsin() + " " + i.getQuantityIsin() + " " + i.getPriceIsin() );
+        }
+
+        Scanner inputFromUser = new Scanner(System.in);
+        System.out.println("Do you want to invest about ISIN ? ");
+        String answerUser = inputFromUser.nextLine();
+        if (YES.equals(answerUser)) {
+
+            // User enters the information about the amount of money that user has
+            System.out.print("Please enter the amount money that you have : ");
+            int amountMoneyUserHave = Integer.parseInt(inputFromUser.nextLine());
+
+            while (amountMoneyUserHave >0) {
+
+                // User enters the name of ISIN that user wants to invest
+                System.out.print( "Please enter the name ISIN that you want to invest : " );
+                String nameIsinUserSelect = inputFromUser.nextLine();
+
+                // User enters the quantity of ISIN that user wants to invest
+                System.out.print("Please enter the amount ISIN that you want to buy : ");
+                int amountIsinUserBuy = Integer.parseInt(inputFromUser.nextLine());
+
+                // Find the ISIN that user choose from the name of ISIN
+                Optional<Isin> foundIsin = arrayItem.stream().filter(i -> i.getNameIsin().equals(nameIsinUserSelect)).findFirst();
+
+                if  (foundIsin.isPresent()) {
+
+                    // Calculate The amount of money that user has to pay
+                    Isin isin = foundIsin.get();
+                    int amountToPay = amountIsinUserBuy * isin.getPriceIsin();
+                    if  (amountToPay <= amountMoneyUserHave) {
+
+                        if  (amountIsinUserBuy <= isin.getQuantityIsin()) {
+                            quantityOfBuyingLessThanMaximum(amountIsinUserBuy, amountToPay, amountMoneyUserHave, isin);
+                        } else {
+                            quantityOfBuyingMoreThanMaximum(isin, amountToPay);
+                        }
+                        amountMoneyUserHave -= amountToPay;
+                    } else {
+                        System.out.println("Sorry you do not have enough money");
                     }
                 } else {
-                    System.out.println("Sorry you do not have enough money");
+                    System.out.println("Do not find the name of ISIN that you choose");
                 }
-            } else {
-                System.out.println("Do not find the name of ISIN that you choose");
+
             }
+        } else if (NO.equals(answerUser)) {
+            System.out.println("See you again");
         }
+
     }
 
-    private static List<String[]> getDataFromTextFile(String url) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(url), 16384);
-        List<String[]> listLine = new ArrayList<>();
-        String line = null;
-        while((line=br.readLine())!=null){
-            String[] oneLine = line.split(",");
-            listLine.add(oneLine);
-        }
-      return listLine;
-    };
+    private static void quantityOfBuyingLessThanMaximum(int amountIsinUserBuy, int amountToPay, int amountMoneyUserHave, Isin isin) {
+        int quantityIsin = isin.getQuantityIsin();
+        int price = isin.getPriceIsin();
+        String nameIsin = isin.getNameIsin();
 
-    private static List<Project4.src.Isin>  createArrayItem(List<String[]> arr){
-        List<Isin> arrayList = new ArrayList<>();
-        for(String[] i : arr){
-            Isin item = new Isin(i[0],Integer.parseInt(i[1]),Integer.parseInt(i[2]));
-            arrayList.add(item);
-        }
-        return arrayList;
-    }
-
-    private static void caseFirst(int amountIsinUserBuy,int quantityIsin, int amountToPay,int amountMoneyUserHave,int price,String nameIsin) {
         System.out.println("The amount " + nameIsin + " that you get is : " + amountIsinUserBuy);
+
+        // Calculate after buying
         int amountMoneyUserAfterBuy = amountMoneyUserHave - amountToPay;
         int amountQuantityISINAfterBuy = quantityIsin - amountIsinUserBuy;
+
         if (amountQuantityISINAfterBuy > 0 && amountMoneyUserAfterBuy > 0) {
+
             Scanner answerUser = new Scanner(System.in);
             System.out.println("The amount of " + nameIsin + " after buying is  : " + amountQuantityISINAfterBuy + " . Do you want to buy ? ");
             String selectUser = answerUser.nextLine();
-            if(selectUser.equals("yes")){
-                  System.out.print("How many of " + nameIsin + " do you buy ? ");
-                  int amountQuantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
-                  if(amountQuantityUserBuySecond <= amountQuantityISINAfterBuy){
-                      int totalPaySecond = amountQuantityUserBuySecond * price;
-                      if(totalPaySecond <= amountMoneyUserAfterBuy){
-                          System.out.println("The amount money of that you have to pay : " + totalPaySecond + " . See you again");
-                      } else {
-                          System.out.println("Sorry you do not have enough money . See you again");
-                      }
-                  } else {
-                      System.out.println("The quantity is not enough . See you again");
-                  }
-                } else if(selectUser.equals("no")){
+
+            if (YES.equals(selectUser)) {
+                System.out.print("How many of " + nameIsin + " do you buy ? ");
+
+                int amountQuantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
+
+                if (amountQuantityUserBuySecond <= amountQuantityISINAfterBuy) {
+
+                    int totalPaySecond = amountQuantityUserBuySecond * price;
+
+                    if (totalPaySecond <= amountMoneyUserAfterBuy) {
+                        System.out.println("The amount money of that you have to pay : " + totalPaySecond + " . See you again");
+                    } else {
+                        System.out.println("Sorry you do not have enough money . See you again");
+                    }
+                } else {
+                    System.out.println("The quantity is not enough . See you again");
+                }
+            } else if (NO.equals(selectUser)) {
                 System.out.println("See you again");
             }
+
         }
+
     }
 
-    private static void caseSecond(String nameIsin, int quantityIsin,int price, int totalPay ){
+    private static void quantityOfBuyingMoreThanMaximum(Isin isin, int totalPay ) {
+        String nameIsin = isin.getNameIsin();
+        int quantityIsin = isin.getQuantityIsin();
+        int price = isin.getPriceIsin();
+
         Scanner answerUser = new Scanner(System.in);
         System.out.print("The maximum quantity of " + nameIsin + " is :" + quantityIsin + " . Do you want to buy ? ");
         String selectUser = answerUser.nextLine();
-        if(selectUser.equals("yes")){
+
+        if (YES.equals(selectUser)) {
             System.out.println("The amount money that you have to pay : " +totalPay + " . See you again");
-        } else if(selectUser.equals("no")){
-            System.out.print("How many of " + nameIsin + " do you want to buy ? ");
-            int quantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
-            if(quantityUserBuySecond <= quantityIsin){
-                System.out.println("The amount of " + nameIsin + " that you have is " + quantityUserBuySecond + " . " + "The total money that you have you have to pay is " + quantityUserBuySecond * price + ". See you again");
-            } else {
-                System.out.println("The amount of " + nameIsin + " is not enough . See you again");
+        } else if (NO.equals(selectUser)) {
+            int quantityUserBuySecond = 0 ;
+            boolean resultUserBuySecond = true;
+            while(resultUserBuySecond){
+                System.out.print("How many of " + nameIsin + " do you want to buy ? ");
+                quantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
+                resultUserBuySecond = quantityUserBuySecond > quantityIsin ;
             }
+            System.out.println("The amount of " + nameIsin + " that you have is " + quantityUserBuySecond + " . " +
+                    "The total money that you have you have to pay is " + quantityUserBuySecond * price + ". See you again");
         }
+
+    }
+
+    /**
+     * Read data and return a list of strings[]
+     * @param url path to the file - RELATIVE path
+     * @return list of string[]
+     * @throws IOException exception
+     */
+    private static List<String[]> getDataFromFileText(String url) throws IOException {
+
+        // Create variable and transfer data into variable
+        BufferedReader readFile = new BufferedReader(new FileReader(url), 16384);
+
+        /* Create a big array String*/
+        List<String[]> arrayString = new ArrayList<>();
+        String line = null;
+
+        /* Get data from line by line and add into a big array string */
+        while ((line = readFile.readLine()) != null ) {
+            String[] oneLine = line.split(",");
+            arrayString.add(oneLine);
+        }
+
+        return arrayString;
+
+    };
+
+    /**
+     * Receive array of string and return list of Isin
+     * @param arrayString array of string have data to transfer into each item
+     * @return list of Isin
+     */
+    private static List<Project4.src.Isin> createArrayOfIsin(List<String[]> arrayString) {
+
+        List<Isin> arrayItem = new ArrayList<>();
+
+        for (String[] i : arrayString) {
+            Isin item = new Isin(i[0],Integer.parseInt(i[1]),Integer.parseInt(i[2]));
+            arrayItem.add(item);
+        }
+
+        return arrayItem;
+
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
