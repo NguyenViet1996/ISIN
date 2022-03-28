@@ -14,8 +14,9 @@ public class Test {
 
         System.out.println("ISIN\t\tQUANTITY\tPRICE");
 
-        // First : get data and create array of string --> create function to resolve data and return array of string
-        String url = "src/Project4/resource/data.txt";
+        String url = "C://ISIN//src//project4//resource//data.txt";
+
+        // First : get data from file text and create a array of string --> create a function to get data and return an array of string
         List<String[]> arrayString = getDataFromFileText(url);
 
         // Second : create each object and transfer data into every item --> create a function to transfer into  array of string and return an array of item
@@ -42,8 +43,8 @@ public class Test {
         if (YES.equals(answerUser)) {
 
             // User enters the information about the amount of money that user has
-            System.out.print("Please enter the amount money that you have : ");
-            int amountMoneyUserHave = Integer.parseInt(inputFromUser.nextLine());
+            String amountMoneyOfUser = "Please enter the amount money that you have :";
+            int amountMoneyUserHave = getInputDataFromUser(inputFromUser,amountMoneyOfUser);
 
             while (amountMoneyUserHave >0) {
 
@@ -52,8 +53,8 @@ public class Test {
                 String nameIsinUserSelect = inputFromUser.nextLine();
 
                 // User enters the quantity of ISIN that user wants to invest
-                System.out.print("Please enter the amount ISIN that you want to buy : ");
-                int amountIsinUserBuy = Integer.parseInt(inputFromUser.nextLine());
+                String quantityOfIsinUserBuy = "Please enter the quantity of Isin that you want to buy :";
+                int amountIsinUserBuy = getInputDataFromUser(inputFromUser,quantityOfIsinUserBuy);
 
                 // Find the ISIN that user choose from the name of ISIN
                 Optional<Isin> foundIsin = arrayItem.stream().filter(i -> i.getNameIsin().equals(nameIsinUserSelect)).findFirst();
@@ -85,6 +86,32 @@ public class Test {
 
     }
 
+    /**
+     * Get and validate the money that user have
+     * @param inputFromUser
+     * @return the money that user have
+     */
+    private static Integer getInputDataFromUser(Scanner inputFromUser,String demandOfUser) {
+
+        do {
+            System.out.println(demandOfUser);
+            try {
+                return Integer.parseInt(inputFromUser.nextLine());
+            }
+            catch (Exception e) {
+                System.out.println(e);
+            }
+        } while (true);
+
+    }
+
+    /**
+     * The quantity of Isin that user buy is less than the maximum of Isin
+     * @param amountIsinUserBuy
+     * @param amountToPay
+     * @param amountMoneyUserHave
+     * @param isin
+     */
     private static void quantityOfBuyingLessThanMaximum(int amountIsinUserBuy, int amountToPay, int amountMoneyUserHave, Isin isin) {
         int quantityIsin = isin.getQuantityIsin();
         int price = isin.getPriceIsin();
@@ -128,7 +155,7 @@ public class Test {
     }
 
     /**
-     *
+     * the case that quantity of Isin that user buy is greater than the maximum of Isin
      * @param isin
      * @param totalPay
      */
