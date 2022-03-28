@@ -8,7 +8,7 @@ import java.util.Optional;
 public class Test {
 
     public static final String YES = "yes";
-    public static final String NO = "yes";
+    public static final String NO = "no";
 
     public static void main(String[] args) throws IOException {
 
@@ -127,6 +127,11 @@ public class Test {
 
     }
 
+    /**
+     *
+     * @param isin
+     * @param totalPay
+     */
     private static void quantityOfBuyingMoreThanMaximum(Isin isin, int totalPay ) {
         String nameIsin = isin.getNameIsin();
         int quantityIsin = isin.getQuantityIsin();
@@ -136,20 +141,19 @@ public class Test {
         System.out.print("The maximum quantity of " + nameIsin + " is :" + quantityIsin + " . Do you want to buy ? ");
         String selectUser = answerUser.nextLine();
 
-        if (YES.equals(selectUser)) {
-            System.out.println("The amount money that you have to pay : " +totalPay + " . See you again");
-        } else if (NO.equals(selectUser)) {
+        if ( YES.equals(selectUser) ) {
+            System.out.println("The amount money that you have to pay : " + totalPay + " . See you again");
+        } else if ( NO.equals(selectUser) ) {
             int quantityUserBuySecond = 0 ;
-            boolean resultUserBuySecond = true;
-            while(resultUserBuySecond){
+            boolean isDemandNotValid = true;
+            while(isDemandNotValid){
                 System.out.print("How many of " + nameIsin + " do you want to buy ? ");
                 quantityUserBuySecond = Integer.parseInt(answerUser.nextLine());
-                resultUserBuySecond = quantityUserBuySecond > quantityIsin ;
+                isDemandNotValid = quantityUserBuySecond > quantityIsin ;
             }
             System.out.println("The amount of " + nameIsin + " that you have is " + quantityUserBuySecond + " . " +
                     "The total money that you have you have to pay is " + quantityUserBuySecond * price + ". See you again");
         }
-
     }
 
     /**
