@@ -1,0 +1,11 @@
+[
+  {
+    "nameIsin": "ISIN001", "quantityIsin": 1000, "priceIsin": 1
+  },
+  {
+    "nameIsin": "ISIN002", "quantityIsin": 2000, "priceIsin": 2
+  },
+  {
+    "nameIsin": "ISIN003", "quantityIsin": 3000, "priceIsin": 3
+  }
+]
