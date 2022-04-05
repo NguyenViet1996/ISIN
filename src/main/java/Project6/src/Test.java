@@ -32,7 +32,7 @@ public class Test {
 
 				System.out.println("NAMEOFISIN\t\tQUANTITY\tPRICE");
 				for (Isin i : listIsin ) {
-						System.out.println( i.getNameIsin() + "\t" + "\t" + "\t" + i.getQuantityIsin() + "\t" + "\t" + i.getPriceIsin() );
+						System.out.println(i);
 				}
 
 				Scanner inputFromUser = new Scanner(System.in);

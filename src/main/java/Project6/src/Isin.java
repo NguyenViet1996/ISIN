@@ -4,6 +4,11 @@ public class Isin {
 		private String nameIsin;
 		private int quantityIsin,priceIsin;
 
+		@Override
+		public String toString() {
+				return nameIsin + "\t" + "\t" + "\t" + quantityIsin + "\t" + "\t" + priceIsin;
+		}
+
 		public Isin(String nameIsin,int quantityIsin,int priceIsin){
 				this.nameIsin = nameIsin;
 				this.quantityIsin = quantityIsin;
