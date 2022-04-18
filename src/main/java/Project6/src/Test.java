@@ -1,11 +1,9 @@
 package Project6.src;
 
 import com.google.gson.Gson;
+
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Optional;
+import java.util.*;
 
 public class Test {
 
@@ -19,7 +17,7 @@ public class Test {
 				// Convert json data to object data --> return list of Isins
 				List<Isin> listIsin = convertJsonDataToObjectData(url);
 
-				// Third : Show data on the UI
+				// Show data on the UI
 				mainProcessing(listIsin);
 
 		}
@@ -58,19 +56,18 @@ public class Test {
 								Optional<Isin> foundIsin = listIsin.stream().filter(i -> i.getNameIsin().equals(nameIsinUserSelect)).findFirst();
 
 								if  (foundIsin.isPresent()) {
-
 										// Calculate The amount of money that user has to pay
 										Isin isin = foundIsin.get();
 										int amountToPay = amountIsinUserBuy * isin.getPriceIsin();
 										if  (amountToPay <= amountMoneyUserHave) {
-                        int  amountMoneyUserHaveAfterBuy = 0;
+                        ValueAfterBuy outputResult;
 												if  (amountIsinUserBuy <= isin.getQuantityIsin()) {
-														 amountMoneyUserHaveAfterBuy = quantityOfBuyingLessThanMaximum(amountIsinUserBuy, amountToPay, amountMoneyUserHave, isin);
+														outputResult = quantityOfIsinUserBuyLessThanMaximum(amountIsinUserBuy, amountToPay, amountMoneyUserHave, isin);
+														amountMoneyUserHave = outputResult.getAmountMoneyUserHaveAfterBuy();
 												} else {
-														    amountMoneyUserHaveAfterBuy = quantityOfBuyingMoreThanMaximum(isin, amountToPay,amountMoneyUserHave);
+														outputResult = quantityOfIsinUserBuyMoreThanMaximum(isin, amountToPay,amountMoneyUserHave);
+														amountMoneyUserHave = outputResult.getAmountMoneyUserHaveAfterBuy();
 												}
-												amountMoneyUserHave = amountMoneyUserHaveAfterBuy;
-
 										} else {
 												System.out.println("Sorry you do not have enough money");
 										}
@@ -110,49 +107,49 @@ public class Test {
 		 * @param amountToPay
 		 * @param amountMoneyUserHave
 		 * @param isin
+		 * return amount of money that user have after buying and amount of quantity ISIN after buy
 		 */
-		private static int quantityOfBuyingLessThanMaximum(int amountIsinUserBuy, int amountToPay, int amountMoneyUserHave, Isin isin) {
-				int amountMoneyUserHaveAfterBuy ;
+		private static ValueAfterBuy quantityOfIsinUserBuyLessThanMaximum(int amountIsinUserBuy, int amountToPay, int amountMoneyUserHave, Isin isin) {
+				ValueAfterBuy outputValue = null;
+				int amountMoneyUserHaveAfterBuyFirst ;
 				int quantityIsin = isin.getQuantityIsin();
-				int price = isin.getPriceIsin();
+				int priceIsin = isin.getPriceIsin();
 				String nameIsin = isin.getNameIsin();
 
 				System.out.println("The amount " + nameIsin + " that you get is : " + amountIsinUserBuy);
 
 				// Calculate after buying
-				amountMoneyUserHaveAfterBuy = amountMoneyUserHave - amountToPay;
+				amountMoneyUserHaveAfterBuyFirst = amountMoneyUserHave - amountToPay;
 				int amountQuantityISINAfterBuyFirst = quantityIsin - amountIsinUserBuy;
 
-				if (amountQuantityISINAfterBuyFirst > 0 && amountMoneyUserHaveAfterBuy > 0) {
-
+				if (amountQuantityISINAfterBuyFirst > 0 && amountMoneyUserHaveAfterBuyFirst > 0) {
 						Scanner answerUser = new Scanner(System.in);
 						System.out.println("The amount of " + nameIsin + " after buying is  : " + amountQuantityISINAfterBuyFirst + " . Do you want to buy ? ");
 						String selectUser = answerUser.nextLine();
 
-						if (YES.equals(selectUser)) {
+						if (YES.equalsIgnoreCase(selectUser)) {
 
-                String informationOfIsinToUser = "How many of " + nameIsin + " do you buy ? ";
-								int amountQuantityUserBuySecond = checkDataNumberFromUser(answerUser,informationOfIsinToUser);
+                String informationOfIsinToUserAfterBuyFirst = "How many of " + nameIsin + " do you buy ? ";
+								int amountQuantityUserBuySecond = checkDataNumberFromUser(answerUser,informationOfIsinToUserAfterBuyFirst);
 
 								if (amountQuantityUserBuySecond <= amountQuantityISINAfterBuyFirst) {
+										int totalUserPaySecond = amountQuantityUserBuySecond * priceIsin;
 
-										int totalUserPaySecond = amountQuantityUserBuySecond * price;
-
-										if (totalUserPaySecond <= amountMoneyUserHaveAfterBuy) {
+										if (totalUserPaySecond <= amountMoneyUserHaveAfterBuyFirst) {
 												System.out.println("The amount money of that you have to pay : " + totalUserPaySecond );
-												amountMoneyUserHaveAfterBuy -= totalUserPaySecond;
+												amountMoneyUserHaveAfterBuyFirst -= totalUserPaySecond;
 										} else {
 												System.out.println("Sorry you do not have enough money");
 										}
-										return amountMoneyUserHaveAfterBuy;
+										   outputValue = new ValueAfterBuy(amountMoneyUserHaveAfterBuyFirst,amountQuantityISINAfterBuyFirst-amountQuantityUserBuySecond);
 								} else {
-										System.out.println("The quantity is not enough . See you again");
+										System.out.println("The quantity is not enough . ");
 								}
-						} else if (NO.equals(selectUser)) {
+						} else if (NO.equalsIgnoreCase(selectUser)) {
 								System.out.println("Thank you");
 						}
 				}
-				return amountMoneyUserHaveAfterBuy;
+				return outputValue;
 
 		}
 
@@ -161,11 +158,11 @@ public class Test {
 		 * @param isin
 		 * @param totalPay
 		 */
-		private static int quantityOfBuyingMoreThanMaximum(Isin isin, int totalPay,int amountMoneyUserHave ) {
-				int amountMoneyUserHaveAfterBuy = 0;
+		private static ValueAfterBuy quantityOfIsinUserBuyMoreThanMaximum(Isin isin, int totalPay, int amountMoneyUserHave ) {
+				ValueAfterBuy outputValue = null;
 				String nameIsin = isin.getNameIsin();
 				int quantityIsin = isin.getQuantityIsin();
-				int price = isin.getPriceIsin();
+				int priceIsin = isin.getPriceIsin();
 
 				Scanner answerUser = new Scanner(System.in);
 				System.out.print("The maximum quantity of " + nameIsin + " is :" + quantityIsin + " . Do you want to buy ? ");
@@ -173,7 +170,7 @@ public class Test {
 
 				if ( YES.equals(selectUser) ) {
 						System.out.println("The amount money that you have to pay : " + totalPay );
-						amountMoneyUserHaveAfterBuy = amountMoneyUserHave - totalPay;
+						outputValue = new ValueAfterBuy(amountMoneyUserHave - totalPay,0);
 				} else if ( NO.equals(selectUser) ) {
 						int quantityUserBuySecond = 0 ;
 						boolean isDemandNotValid = true;
@@ -183,16 +180,16 @@ public class Test {
 								isDemandNotValid = quantityUserBuySecond > quantityIsin ;
 						}
 						System.out.println("The amount of " + nameIsin + " that you have is " + quantityUserBuySecond + " . " +
-								"The total money that you have you have to pay is " + quantityUserBuySecond * price + ". See you again");
-						amountMoneyUserHaveAfterBuy = amountMoneyUserHave - quantityUserBuySecond * price;
+								"The total money that you have you have to pay is " + quantityUserBuySecond * priceIsin );
+						outputValue = new ValueAfterBuy(amountMoneyUserHave - quantityUserBuySecond * priceIsin,quantityIsin - quantityUserBuySecond);
 				}
-				return amountMoneyUserHaveAfterBuy;
+				return outputValue;
 
 		}
 
 		/**
-		 * convert json data to object data and return list of Isin
-		 * @param url
+		 * convert json data to object data
+		 * @param url:relative path json data
 		 * @return
 		 * @throws IOException
 		 */
@@ -201,12 +198,9 @@ public class Test {
 				BufferedReader readFile = new BufferedReader(new FileReader(url), 16384);
         Isin[] arrayData = gson.fromJson(readFile,Isin[].class);
         List<Isin> listIsin = new ArrayList<>();
-		    for(Isin i : arrayData) {
-						Isin isin = new Isin(i.getNameIsin(),i.getQuantityIsin(),i.getPriceIsin());
-						listIsin.add(isin);
-				}
-				return listIsin;
+				Collections.addAll(listIsin, arrayData);
 
+				return listIsin;
 		};
 
 }

@@ -1,25 +1,25 @@
 package Project6.src;
 
-public class BuyResult {
+public class ValueAfterBuy {
 
-		private int amountUserHaveAfterBuy;
+		private int amountMoneyUserHaveAfterBuy;
 		private int quantityIsinAfterBuy;
 
-		public BuyResult(int amountUserHaveAfterBuy,int quantityIsinAfterBuy) {
-				this.amountUserHaveAfterBuy = amountUserHaveAfterBuy;
+		public ValueAfterBuy(int amountUserHaveAfterBuy, int quantityIsinAfterBuy) {
+				this.amountMoneyUserHaveAfterBuy = amountUserHaveAfterBuy;
 				this.quantityIsinAfterBuy = quantityIsinAfterBuy;
 		}
 
-		public BuyResult() {
+		public ValueAfterBuy() {
 
 		}
 
-		public int getAmountUserHaveAfterBuy() {
-				return amountUserHaveAfterBuy;
+		public int getAmountMoneyUserHaveAfterBuy() {
+				return amountMoneyUserHaveAfterBuy;
 		}
 
-		public void setAmountUserHaveAfterBuy(int amountUserHaveAfterBuy) {
-				this.amountUserHaveAfterBuy = amountUserHaveAfterBuy;
+		public void setAmountMoneyUserHaveAfterBuy(int amountMoneyUserHaveAfterBuy) {
+				this.amountMoneyUserHaveAfterBuy = amountMoneyUserHaveAfterBuy;
 		}
 
 		public int getQuantityIsinAfterBuy() {

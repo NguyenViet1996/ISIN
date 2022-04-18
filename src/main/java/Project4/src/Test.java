@@ -12,6 +12,14 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 
+        Boolean maybeNull = null;
+//        if(maybeNull != null && maybeNull) {
+//            System.out.println("AAAAAAAA");
+//        }
+        if(Boolean.TRUE.equals(maybeNull)) {
+            System.out.println("AAAAAAAA");
+        }
+
         System.out.println("ISIN\t\tQUANTITY\tPRICE");
 
         String url = "C://ISIN//src//project4//resource//data.txt";
