@@ -2,10 +2,18 @@ package Project6.src;
 
 public class ValueAfterBuy {
 
-		private int amountMoneyUserHaveAfterBuy;
-		private int quantityIsinAfterBuy;
+		private Integer amountMoneyUserHaveAfterBuy;
+		private Integer quantityIsinAfterBuy;
 
-		public ValueAfterBuy(int amountUserHaveAfterBuy, int quantityIsinAfterBuy) {
+		@Override
+		public String toString() {
+				return "ValueAfterBuy{" +
+						"amountMoneyUserHaveAfterBuy=" + amountMoneyUserHaveAfterBuy +
+						", quantityIsinAfterBuy=" + quantityIsinAfterBuy +
+						'}';
+		}
+
+		public ValueAfterBuy(Integer amountUserHaveAfterBuy, Integer quantityIsinAfterBuy) {
 				this.amountMoneyUserHaveAfterBuy = amountUserHaveAfterBuy;
 				this.quantityIsinAfterBuy = quantityIsinAfterBuy;
 		}
@@ -18,7 +26,7 @@ public class ValueAfterBuy {
 				return amountMoneyUserHaveAfterBuy;
 		}
 
-		public void setAmountMoneyUserHaveAfterBuy(int amountMoneyUserHaveAfterBuy) {
+		public void setAmountMoneyUserHaveAfterBuy(Integer amountMoneyUserHaveAfterBuy) {
 				this.amountMoneyUserHaveAfterBuy = amountMoneyUserHaveAfterBuy;
 		}
 
@@ -26,7 +34,7 @@ public class ValueAfterBuy {
 				return quantityIsinAfterBuy;
 		}
 
-		public void setQuantityIsinAfterBuy(int quantityIsinAfterBuy) {
+		public void setQuantityIsinAfterBuy(Integer quantityIsinAfterBuy) {
 				this.quantityIsinAfterBuy = quantityIsinAfterBuy;
 		}
 
