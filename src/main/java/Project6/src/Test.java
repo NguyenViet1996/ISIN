@@ -150,7 +150,7 @@ public class Test {
 
 						if (quantityIsinAfterFirstBuy > 0) {
 								Scanner answerUser = new Scanner(System.in);
-								System.out.println("The amount of " + nameIsin + " after buying is : " + quantityIsinAfterFirstBuy + " . Do you want to continue to buy ? (yes/no) : ");
+								System.out.println("The amount of " + nameIsin + " after buying is : " + quantityIsinAfterFirstBuy + " . Do you want to continue to buy ?" + nameIsin + "(yes/no) : ");
 								String selectUser = answerUser.nextLine();
 
 								if (YES.equalsIgnoreCase(selectUser)) {
@@ -202,7 +202,7 @@ public class Test {
 				int priceIsin = isin.getPriceIsin();
 
 				Scanner answerUser = new Scanner(System.in);
-				System.out.print("The maximum quantity of " + nameIsin + " is :" + quantityIsin + " . Do you want to buy ? ");
+				System.out.print("The maximum quantity of " + nameIsin + " is :" + quantityIsin + " . Do you want to buy ?(yes/no) ");
 				String selectUser = answerUser.nextLine();
 
 				if ( YES.equalsIgnoreCase(selectUser) ) {
