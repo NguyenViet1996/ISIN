@@ -1,7 +1,7 @@
 package Project7;
 
 import com.google.gson.Gson;
-
+import java.sql.*;
 import java.io.*;
 import java.util.*;
 
@@ -10,18 +10,19 @@ public class Test {
 		public static final String YES = "yes";
 		public static final String NO = "no";
 
-		public static void main(String[] args) throws IOException {
+		public static void main(String[] args) throws  SQLException {
 
-				String url = "src/main/java/Project6/resource/data.json";
+				String url = "jdbc:hsqldb:hsql://localhost/testdb";
 
-				// Convert json data to object data --> return list of Isins
-				List<Isin> listIsin = convertJsonDataToObjectData(url);
+				// get data from database
+				List<Isin> listIsin = getDataFromDatabase(url);
 
 				// Show data on the UI
 				List<Isin> dataAfterProcessing = mainProcessing(listIsin);
 
-				// Write to file data json
-				writeFile(dataAfterProcessing);
+				// update data into the table
+				updateDatabase(dataAfterProcessing,url);
+
 		}
 
 		/**
@@ -227,35 +228,60 @@ public class Test {
 		}
 
 		/**
-		 * convert json data to object data
-		 * @param url:relative path json data
+		 * get data from database
+		 * @param url: connect to database on the local
 		 * @return
 		 * @throws IOException
 		 */
-		private static List<Isin> convertJsonDataToObjectData(String url) throws IOException {
-				Gson gson = new Gson();
-				BufferedReader readFile = new BufferedReader(new FileReader(url), 16384);
-				Isin[] arrayData = gson.fromJson(readFile,Isin[].class);
+		private static List<Isin> getDataFromDatabase(String url) throws  SQLException {
 				List<Isin> listIsin = new ArrayList<>();
-				Collections.addAll(listIsin, arrayData);
+				Connection con = null;
+				Statement stmt = null;
 
+        try {
+						//create connection
+						con = DriverManager.getConnection(url,"SA","");
+						// create statement
+						stmt = con.createStatement();
+						// get data from database
+						ResultSet rs =stmt.executeQuery("select * from ISINS");
+						while(rs.next()) {
+               String nameIsin = rs.getString("NAMEISIN");
+							 int quantity = rs.getInt("QUANTITY");
+							 int price = rs.getInt("PRICE");
+               Isin isin = new Isin(nameIsin,quantity,price);
+							 listIsin.add(isin);
+						}
+				} catch (Exception e) {
+						e.printStackTrace(System.out);
+				}
 				return listIsin;
+
 		};
 
 		/**
-		 * convert object data to json data and write to file new data.json
-		 * @param data
+		 * update data on the database
+ 		 * @param dataAfterProcessing
 		 */
-		private static void writeFile(List<Isin> data) {
-				Gson gson = new Gson();
-				String inputData = gson.toJson(data);
-				try {
-						FileWriter myWiter = new FileWriter("src/main/java/Project6/resource/data.json");
-						myWiter.write(inputData);
-						myWiter.close();
-				} catch (IOException e) {
-						e.printStackTrace();
+		public static void updateDatabase(List<Isin> dataAfterProcessing,String url) throws SQLException {
+				Connection con = null;
+        // create connection
+				con = DriverManager.getConnection(url,"SA","");
+				String sql = " update ISINS set QUANTITY = ? WHERE NAMEISIN = ? ";
+        try {
+						for(Isin isin : dataAfterProcessing) {
+								PreparedStatement ps = con.prepareStatement(sql);
+								int quantity = isin.getQuantityIsin();
+								String nameIsin = isin.getNameIsin();
+								// update data into the database
+								ps.setInt(1,quantity);
+								ps.setString(2,nameIsin);
+								int result = ps.executeUpdate();
+						}
+				} catch (Exception e) {
+            e.printStackTrace(System.out);
 				}
+
 		}
 
 }
