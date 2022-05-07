@@ -10,7 +10,6 @@ public class processDataOnDatabase {
 
     public processDataOnDatabase(String url) {
         this.url = url;
-//        this.dataAfterProcessing = dataAfterProcessing;
     }
 
    public void setDataFromDatabase(String url) {
