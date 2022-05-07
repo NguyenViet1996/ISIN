@@ -11,7 +11,7 @@ public class Test {
     public static void main(String[] args) throws  SQLException {
 
         String url = "jdbc:hsqldb:hsql://localhost/testdb";
-        processDataOnDatabase item = new processDataOnDatabase(url);
+        ProcessDataOnDatabase item = new ProcessDataOnDatabase(url);
 
         // get data from database
         List<Isin> listIsin = item.getDataFromDatabase();

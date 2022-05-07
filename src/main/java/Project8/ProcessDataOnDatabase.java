@@ -4,11 +4,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class processDataOnDatabase {
+public class ProcessDataOnDatabase {
 
     private String url;
 
-    public processDataOnDatabase(String url) {
+    public ProcessDataOnDatabase(String url) {
         this.url = url;
     }
 
