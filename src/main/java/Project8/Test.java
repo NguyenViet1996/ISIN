@@ -20,7 +20,7 @@ public class Test {
         List<Isin> dataAfterProcessing = mainProcessing(listIsin);
 
         // update data into the table
-        item.setUpdateDatabase(url,dataAfterProcessing);
+        item.updateIsinList(url,dataAfterProcessing);
 
     }
 

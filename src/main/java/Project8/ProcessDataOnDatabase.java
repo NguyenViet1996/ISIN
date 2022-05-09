@@ -38,7 +38,7 @@ public class ProcessDataOnDatabase {
 
    }
 
-    public void setUpdateDatabase(String url,List<Isin> dataAfterProcessing) throws SQLException {
+    public void updateIsinList(String url, List<Isin> dataAfterProcessing) throws SQLException {
        Connection con = null;
        con = DriverManager.getConnection(url,"SA","");
        String sql = "update ISINS set quantity = ? WHERE name_isin = ? ";
