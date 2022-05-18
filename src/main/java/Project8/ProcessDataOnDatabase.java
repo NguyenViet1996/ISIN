@@ -6,15 +6,11 @@ import java.util.List;
 
 public class ProcessDataOnDatabase {
 
-    private String url;
+    private final String url;
 
     public ProcessDataOnDatabase(String url) {
         this.url = url;
     }
-
-   public void setDataFromDatabase(String url) {
-         this.url = url;
-   };
 
    public List<Isin> getDataFromDatabase() {
        Connection con = null;
