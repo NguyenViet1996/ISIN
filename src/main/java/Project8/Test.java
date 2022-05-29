@@ -11,7 +11,7 @@ public class Test {
     public static void main(String[] args) throws  SQLException {
 
         String url = "jdbc:hsqldb:hsql://localhost/testdb";
-        ProcessDataOnDatabase item = new ProcessDataOnDatabase(url);
+        IsinDAL item = new IsinDAL(url);
 
         // get data from database
         List<Isin> listIsin = item.getDataFromDatabase();
@@ -212,7 +212,7 @@ public class Test {
         } else if ( NO.equalsIgnoreCase(selectUser) ) {
             int quantityUserBuySecond = 0 ;
             boolean isDemandNotValid = true;
-            while(isDemandNotValid) {
+            while (isDemandNotValid) {
                 String demandOfUser = "How many of " + nameIsin + " do you want to continue to buy ? ";
                 quantityUserBuySecond = checkDataNumberFromUser(answerUser,demandOfUser);
                 isDemandNotValid = quantityUserBuySecond > quantityIsin ;

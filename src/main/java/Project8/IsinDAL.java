@@ -4,29 +4,28 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessDataOnDatabase {
+public class IsinDAL {
 
     private final String url;
 
-    public ProcessDataOnDatabase(String url) {
+    public IsinDAL(String url) {
         this.url = url;
     }
 
    public List<Isin> getDataFromDatabase() {
-       Connection con = null;
-       Statement stmt = null;
        List<Isin> listIsin = new ArrayList<>();
        try {
-           con = DriverManager.getConnection(url,"SA","");
-           stmt = con.createStatement();
+           Connection con = DriverManager.getConnection(url,"SA","");
+           Statement stmt = con.createStatement();
            ResultSet rs = stmt.executeQuery("select * from ISINS");
            while(rs.next()) {
-               String nameIsin = rs.getString("name_isin");
+               String nameIsin = rs.getString("name_isins");
                int quantity = rs.getInt("quantity");
                int price = rs.getInt("price");
                Isin isin = new Isin(nameIsin,quantity,price);
                listIsin.add(isin);
            }
+           con.close();
        } catch (Exception e) {
            e.printStackTrace();
        }
@@ -35,9 +34,8 @@ public class ProcessDataOnDatabase {
    }
 
     public void updateIsinList( List<Isin> dataAfterProcessing) throws SQLException {
-       Connection con = null;
-       con = DriverManager.getConnection(url,"SA","");
-       String sql = "update ISINS set quantity = ? WHERE name_isin = ? ";
+        Connection con = DriverManager.getConnection(url,"SA","");
+       String sql = "update ISINS set quantity = ? WHERE name_isins = ? ";
        try {
            for(Isin isin : dataAfterProcessing) {
                PreparedStatement ps = con.prepareStatement(sql);
@@ -48,6 +46,7 @@ public class ProcessDataOnDatabase {
                int result = ps.executeUpdate();
                System.out.println(result);
            }
+           con.close();
        } catch (Exception e) {
            e.printStackTrace();
        }

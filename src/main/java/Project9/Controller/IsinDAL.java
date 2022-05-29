@@ -1,29 +1,37 @@
-package Project9;
+package Project9.Controller;
+
+import Project9.Model.Isin;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessDataOnDatabase {
+public class IsinDAL {
 
-		public ProcessDataOnDatabase() {
+		private final String url;
+		private final String userName;
+		private final String password;
+
+		public IsinDAL(String url, String userName, String password) {
+				this.url = url;
+				this.userName = userName;
+				this.password = password;
 		}
 
-		public List<Isin> getDataFromDatabase(String url, String userName, String password) {
-				Connection con = null;
-				Statement stmt = null;
+		public List<Isin> getDataFromDatabase() {
 				List<Isin> listIsin = new ArrayList<>();
 				try {
-						con = DriverManager.getConnection(url,userName,password);
-						stmt = con.createStatement();
+						Connection con = DriverManager.getConnection(this.url, this.userName, this.password);
+						Statement stmt = con.createStatement();
 						ResultSet rs = stmt.executeQuery("select * from ISINS");
-						while(rs.next()) {
+						while (rs.next()) {
 								String nameIsin = rs.getString("name_isins");
 								int quantity = rs.getInt("quantity");
 								int price = rs.getInt("price");
-								Isin isin = new Isin(nameIsin,quantity,price);
+								Isin isin = new Isin(nameIsin, quantity, price);
 								listIsin.add(isin);
 						}
+						con.close();
 				} catch (Exception e) {
 						e.printStackTrace();
 				}
@@ -31,12 +39,11 @@ public class ProcessDataOnDatabase {
 
 		}
 
-		public void updateIsinList( List<Isin> dataAfterProcessing,String url, String userName, String password) throws SQLException {
-				Connection con = null;
-				con = DriverManager.getConnection(url,userName,password);
+		public void updateIsinList(List<Isin> dataAfterProcessing) throws SQLException {
+				Connection con = DriverManager.getConnection(this.url, this.userName, this.password);
 				String sql = "update ISINS set quantity = ? WHERE name_isins = ? ";
 				try {
-						for(Isin isin : dataAfterProcessing) {
+						for (Isin isin : dataAfterProcessing) {
 								PreparedStatement ps = con.prepareStatement(sql);
 								int quantity = isin.getQuantityIsin();
 								String nameIsin = isin.getNameIsin();
@@ -45,10 +52,10 @@ public class ProcessDataOnDatabase {
 								int result = ps.executeUpdate();
 								System.out.println(result);
 						}
+						con.close();
 				} catch (Exception e) {
 						e.printStackTrace();
 				}
-
 		}
 
 }

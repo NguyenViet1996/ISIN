@@ -1,9 +1,9 @@
-package Project9;
+package Project9.Model;
 
 public class ValueAfterBuy {
 
-		private Integer amountMoneyUserHaveAfterBuy;
-		private Integer quantityIsinAfterBuy;
+		private final int amountMoneyUserHaveAfterBuy;
+		private final int quantityIsinAfterBuy;
 
 		@Override
 		public String toString() {
@@ -18,24 +18,12 @@ public class ValueAfterBuy {
 				this.quantityIsinAfterBuy = quantityIsinAfterBuy;
 		}
 
-		public ValueAfterBuy() {
-
-		}
-
 		public int getAmountMoneyUserHaveAfterBuy() {
 				return amountMoneyUserHaveAfterBuy;
 		}
 
-		public void setAmountMoneyUserHaveAfterBuy(Integer amountMoneyUserHaveAfterBuy) {
-				this.amountMoneyUserHaveAfterBuy = amountMoneyUserHaveAfterBuy;
-		}
-
 		public int getQuantityIsinAfterBuy() {
 				return quantityIsinAfterBuy;
-		}
-
-		public void setQuantityIsinAfterBuy(Integer quantityIsinAfterBuy) {
-				this.quantityIsinAfterBuy = quantityIsinAfterBuy;
 		}
 
 }

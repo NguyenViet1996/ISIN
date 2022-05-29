@@ -1,5 +1,8 @@
 package Project9;
 
+import Project9.Controller.IsinDAL;
+import Project9.Model.Isin;
+import Project9.Model.ValueAfterBuy;
 import org.ini4j.Wini;
 import java.io.File;
 import java.sql.*;
@@ -10,32 +13,50 @@ public class Test {
 		public static final String YES = "yes";
 		public static final String NO = "no";
 
+		private static final String ERROR_MESSAGE = "ERROR_MESSAGE:" ;
+
+
 		public static void main(String[] args) throws  SQLException {
 
-				String url = null;
-				String userName = null;
-				String password = null;
+//				String url = null;
+//				String userName = null;
+//				String password = null;
+//
+//				try {
+//						Wini ini = new Wini(new File("src/main/java/Project9/myinifile.ini"));
+//						url =  String.valueOf(ini.get("database","url",String.class));
+//						userName = String.valueOf(ini.get("database","username",String.class));
+//						password = String.valueOf(ini.get("database","password",String.class));
+//				}	catch(Exception e) {
+//						System.out.println(e.getMessage());
+//				}
+//
+//				IsinDAL item = new IsinDAL(url, userName, password);
+//
+//				// get data from database
+//				List<Isin> listIsin = item.getDataFromDatabase();
+//
+//				// Show data on the UI and logic processing
+//				List<Isin> dataAfterProcessing = mainProcessing(listIsin);
+//
+//				// update data into the table
+//				item.updateIsinList(dataAfterProcessing);
 
-				try {
-						Wini ini = new Wini(new File("src/main/java/Project9/myinifile.ini"));
-						url =  String.valueOf(ini.get("database","url",String.class));
-						userName = String.valueOf(ini.get("database","username",String.class));
-						password = String.valueOf(ini.get("database","password",String.class));
-				}	catch(Exception e) {
-						System.out.println(e.getMessage());
+				System.out.println(getErrorMessage(new RuntimeException("ERROR_SOURCE:sp_process_idd_reval ERROR_MESSAGE: All previous batch are not Approved/Rejected")));
+				System.out.println(getErrorMessage(new RuntimeException(null, new RuntimeException("ERROR_SOURCE:sp_process_idd_reval ERROR_MESSAGE: All previous batch are not Approved/Rejected") )));
+
+		}
+
+		static String getErrorMessage(Exception e) {
+				String message = e.getMessage();
+				if (e.getCause() != null && e.getCause().getMessage() != null) {
+						message = e.getCause().getMessage();
 				}
-
-				ProcessDataOnDatabase item = new ProcessDataOnDatabase();
-
-				// get data from database
-				List<Isin> listIsin = item.getDataFromDatabase(url, userName, password);
-
-				// Show data on the UI and logic processing
-				List<Isin> dataAfterProcessing = mainProcessing(listIsin);
-
-				// update data into the table
-				item.updateIsinList(dataAfterProcessing, url, userName, password);
-
+				int foundIndex = message.indexOf(ERROR_MESSAGE);
+				if (foundIndex > 0) {
+						message = message.substring(foundIndex + ERROR_MESSAGE.length());
+				}
+				return message;
 		}
 
 		/**
@@ -125,7 +146,7 @@ public class Test {
 		 * @param inputFromUser
 		 * @return the money that user have
 		 */
-		private static Integer checkDataNumberFromUser(Scanner inputFromUser, String demandOfUser) {
+		private static int checkDataNumberFromUser(Scanner inputFromUser, String demandOfUser) {
 
 				do {
 						System.out.print(demandOfUser);

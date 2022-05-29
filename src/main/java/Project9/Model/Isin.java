@@ -1,8 +1,9 @@
-package Project9;
+package Project9.Model;
 
 public class Isin {
-		private String nameIsin;
-		private int quantityIsin,priceIsin;
+		private final String nameIsin;
+		private int quantityIsin;
+		private final int priceIsin;
 
 		@Override
 		public String toString() {
@@ -19,24 +20,16 @@ public class Isin {
 				return nameIsin;
 		}
 
-		public void setNameIsin(String nameIsin) {
-				this.nameIsin = nameIsin;
-		}
-
-		public Integer getQuantityIsin() {
+		public int getQuantityIsin() {
 				return quantityIsin;
 		}
 
-		public void setQuantityIsin(Integer quantityIsin) {
+		public void setQuantityIsin(int quantityIsin) {
 				this.quantityIsin = quantityIsin;
 		}
 
-		public Integer getPriceIsin() {
+		public int getPriceIsin() {
 				return priceIsin;
-		}
-
-		public void setPriceIsin(Integer priceIsin) {
-				this.priceIsin = priceIsin;
 		}
 
 }
