@@ -1,4 +1,4 @@
-package Project9.Controller;
+package Project9;
 
 import Project9.Model.Isin;
 
@@ -41,14 +41,14 @@ public class IsinDAL {
 
 		public void updateIsinList(List<Isin> dataAfterProcessing) throws SQLException {
 				Connection con = DriverManager.getConnection(this.url, this.userName, this.password);
-				String sql = "update ISINS set quantity = ? WHERE name_isins = ? ";
+				String sql = "update ISINS set quantity = ? WHERE id = ? ";
 				try {
 						for (Isin isin : dataAfterProcessing) {
 								PreparedStatement ps = con.prepareStatement(sql);
 								int quantity = isin.getQuantityIsin();
-								String nameIsin = isin.getNameIsin();
+								int id = dataAfterProcessing.indexOf(isin) + 1;
 								ps.setInt(1,quantity);
-								ps.setString(2,nameIsin);
+								ps.setInt(2,id);
 								int result = ps.executeUpdate();
 								System.out.println(result);
 						}
