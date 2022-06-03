@@ -25,10 +25,11 @@ public class IsinDAL {
 						Statement stmt = con.createStatement();
 						ResultSet rs = stmt.executeQuery("select * from ISINS");
 						while (rs.next()) {
+								int id = rs.getInt("id");
 								String nameIsin = rs.getString("name_isins");
 								int quantity = rs.getInt("quantity");
 								int price = rs.getInt("price");
-								Isin isin = new Isin(nameIsin, quantity, price);
+								Isin isin = new Isin(id, nameIsin, quantity, price);
 								listIsin.add(isin);
 						}
 						con.close();
@@ -46,7 +47,7 @@ public class IsinDAL {
 						for (Isin isin : dataAfterProcessing) {
 								PreparedStatement ps = con.prepareStatement(sql);
 								int quantity = isin.getQuantityIsin();
-								int id = dataAfterProcessing.indexOf(isin) + 1;
+								int id = isin.getId();
 								ps.setInt(1,quantity);
 								ps.setInt(2,id);
 								int result = ps.executeUpdate();
