@@ -50,8 +50,8 @@ public class IsinDAL {
 								int id = isin.getId();
 								ps.setInt(1,quantity);
 								ps.setInt(2,id);
-								int result = ps.executeUpdate();
-								System.out.println(result);
+//								int result = ps.executeUpdate();
+//								System.out.println(result);
 						}
 						con.close();
 				} catch (Exception e) {
